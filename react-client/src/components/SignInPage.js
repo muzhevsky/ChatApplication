@@ -14,6 +14,8 @@ export default function SignInPage(){
     const [signInError, setSignInError] = useState(false);
     const [serviceError, setServiceError] = useState(false);
     const [successfulSignIn, setSuccessfulSignIn] = useState(false);
+    const [loginProceeding, setLoginProceeding] = useState(false);
+
 
     const navigate = useNavigate();
 
@@ -41,6 +43,7 @@ export default function SignInPage(){
             email:email,
             password:password
         });
+        setLoginProceeding(true);
 
         fetch("/signin", PostHttpRequestOptions(body))
             .then((response) => {
@@ -49,9 +52,11 @@ export default function SignInPage(){
                 setServiceError(false);
                 if (response.status === 401){
                     setSignInError(true);
+                    return Promise.reject(new Error("test"));
                 }
                 else if (response.status >= 500){
                     setServiceError(true);
+                    return Promise.reject(new Error("asd"));
                 }
                 else{
                     return response.json();
@@ -61,21 +66,27 @@ export default function SignInPage(){
                 setSuccessfulSignIn(true);
                 setUserData(response);
             })
-            .catch(error => console.log('error', error));
+            .catch(error => {
+                setSuccessfulSignIn(false);
+                console.log('error', error)
+            });
     }
 
     const handleErrors = () => {
+        console.log(successfulSignIn);
         if (serviceError) return <Error message="service is unavailable now"></Error>
         else if (signInError) return <Error message="invalid email or password"></Error>
     }
 
     return (
-        <div className="register">
-            <EmailInput fieldName="email" className="textInput" onChangeFunction={ (e) => setEmail(e.target.value)}/>
-            <PasswordInput fieldName="password" className="textInput" onChangeFunction={ (e) => setPassword(e.target.value)}/>
-            <button onClick={sendSignupData}>submit</button>
-            {handleErrors()}
-            {successfulSignIn?<Navigate to="../chat"/>:""}
-        </div>
+        <>
+            <div className="register">
+                <EmailInput fieldName="email" className="textInput" onChangeFunction={ (e) => setEmail(e.target.value)}/>
+                <PasswordInput fieldName="password" className="textInput" onChangeFunction={ (e) => setPassword(e.target.value)}/>
+                <button onClick={sendSignupData}>submit</button>
+                {handleErrors()}
+                {successfulSignIn?<Navigate to="../chat"/>:""}
+            </div>
+        </>
     )
 }

@@ -13,9 +13,11 @@ export function PostHttpRequestOptions(body){
 export function GetHTTPRequestOptions(headers){
     let formattedHeaders = new Headers();
 
-    Object.entries(headers).forEach((entry)=>{
-        formattedHeaders.append(entry[0], entry[1]);
-    });
+    if (headers){
+        Object.entries(headers).forEach((entry)=>{
+            formattedHeaders.append(entry[0], entry[1]);
+        });
+    }
 
     return({
         method: "GET",

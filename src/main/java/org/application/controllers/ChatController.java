@@ -22,9 +22,6 @@ public class ChatController {
     @Autowired
     private AccountRepository accountRepository;
 
-    @Autowired
-    private SimpMessageSendingOperations messagingTemplate;
-
     @MessageMapping("/chat")
     @SendToUser("/topic/messages")
     @CrossOrigin(origins = "http://localhost:3000")

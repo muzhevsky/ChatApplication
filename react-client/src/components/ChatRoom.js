@@ -16,10 +16,11 @@ export default function ChatRoom() {
     let stompClient;
 
     useEffect(() => {
-        let options = GetHTTPRequestOptions({userId: userData.userId});
+        if (!userData) return;
+        let options = GetHTTPRequestOptions(null);
 
         console.log(JSON.stringify(options));
-        fetch("http://localhost:8080/join/1", options)
+        fetch("http://localhost:8080/join/"+userData.id, options)
             .then((response) => response.json())
             .then(response => console.log(response));
 
